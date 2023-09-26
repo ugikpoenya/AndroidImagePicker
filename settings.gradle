@@ -1,0 +1,3 @@
+rootProject.name = "AndroidImagePicker"
+include ':app'
+include ':ImagePicker'

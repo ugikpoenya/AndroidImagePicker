@@ -7,7 +7,11 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 
 class RandomImage {
-    fun getImage(context: Context, width: String, height: String, function: (response: String?) -> (Unit)) {
+    fun getImage(context: Context, function: (response: String?) -> (Unit)) {
+        getImage(context, 512, 512, function)
+    }
+
+    fun getImage(context: Context, width: Int, height: Int, function: (response: String?) -> (Unit)) {
         val queue = Volley.newRequestQueue(context)
         val url = "https://random.imagecdn.app/v1/image?width=$width&height=$height"
         val stringRequest = StringRequest(
@@ -22,11 +26,11 @@ class RandomImage {
         queue.add(stringRequest)
     }
 
-    fun getImage(width: String, height: String): String {
+    fun getImage(width: Int, height: Int): String {
         return "https://random.imagecdn.app/$width/$height"
     }
 
     fun getImage(): String {
-        return "https://random.imagecdn.app/512/512"
+        return getImage(512, 512)
     }
 }

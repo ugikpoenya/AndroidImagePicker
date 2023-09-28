@@ -7,31 +7,37 @@ import android.graphics.Paint
 import android.graphics.RectF
 
 
+private fun getScale(source: Bitmap, watermark: Bitmap, scale: Float): Float {
+    var scaleM = (source.width.toFloat() * scale / watermark.width.toFloat())
+    if (source.width > source.height) scaleM = (source.height.toFloat() * scale / watermark.height.toFloat())
+    return scaleM
+}
+
 fun addWatermarkBitmap(source: Bitmap, watermark: Bitmap, scale: Float, alpha: Int, margin: Float): Bitmap {
     return addWatermarkBitmap(source, watermark, scale, alpha, margin, margin)
 }
 
 fun addWatermarkBitmapCenter(source: Bitmap, watermark: Bitmap, scale: Float, alpha: Int): Bitmap {
-    val scaleM = (source.height.toFloat() * scale / watermark.height.toFloat())
+    val scaleM = getScale(source, watermark, scale)
     val width = (source.width.toFloat() / 2) - ((scaleM * watermark.width) / 2)
     val height = (source.height.toFloat() / 2) - ((scaleM * watermark.height) / 2)
     return addWatermarkBitmap(source, watermark, scale, alpha, width, height)
 }
 
 fun addWatermarkBitmapBottom(source: Bitmap, watermark: Bitmap, scale: Float, alpha: Int, margin: Float): Bitmap {
-    val scaleM = (source.height.toFloat() * scale / watermark.height.toFloat())
+    val scaleM = getScale(source, watermark, scale)
     val height = source.height.toFloat() - (scaleM * watermark.height) - margin
     return addWatermarkBitmap(source, watermark, scale, alpha, margin, height)
 }
 
 fun addWatermarkBitmapEnd(source: Bitmap, watermark: Bitmap, scale: Float, alpha: Int, margin: Float): Bitmap {
-    val scaleM = (source.height.toFloat() * scale / watermark.height.toFloat())
+    val scaleM = getScale(source, watermark, scale)
     val width = source.width.toFloat() - (scaleM * watermark.width) - margin
     return addWatermarkBitmap(source, watermark, scale, alpha, width, margin)
 }
 
 fun addWatermarkBitmapBottomEnd(source: Bitmap, watermark: Bitmap, scale: Float, alpha: Int, margin: Float): Bitmap {
-    val scaleM = (source.height.toFloat() * scale / watermark.height.toFloat())
+    val scaleM = getScale(source, watermark, scale)
     val width = source.width.toFloat() - (scaleM * watermark.width) - margin
     val height = source.height.toFloat() - (scaleM * watermark.height) - margin
     return addWatermarkBitmap(source, watermark, scale, alpha, width, height)
@@ -59,7 +65,7 @@ fun addWatermarkBitmap(source: Bitmap, watermark: Bitmap, scale: Float, alpha: I
 
     // scale / adjust height of your logo/watermark
     // i am scaling it down to 30%
-    scaleWm = (height.toFloat() * scale / watermark.height.toFloat())
+    scaleWm = getScale(source, watermark, scale)
     // now create the matrix
     matrix = Matrix()
     matrix.postScale(scaleWm, scaleWm)

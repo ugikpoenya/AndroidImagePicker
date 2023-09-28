@@ -4,15 +4,20 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ugikpoenya.imagepicker.ImageEraserActivity
 import com.ugikpoenya.imagepicker.ImageHolder
 import com.ugikpoenya.imagepicker.ImagePicker
+import com.ugikpoenya.imagepicker.RandomImage
 import com.ugikpoenya.imagepicker.currentPhotoFile
 import com.ugikpoenya.imagepicker.tools.addWatermarkBitmap
 import com.ugikpoenya.imagepicker.tools.getBitmabFromUri
@@ -36,6 +41,21 @@ class MainActivity : AppCompatActivity() {
 
         binding?.btnGallery?.setOnClickListener {
             galeryLauncer.launch(ImagePicker().getIntentGallery())
+        }
+
+        RandomImage().getImage(this, 720, 320) { response ->
+            Glide.with(this)
+                .asBitmap()
+                .load(response)
+                .into(object : CustomTarget<Bitmap?>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
+                        val watermark = BitmapFactory.decodeResource(resources, R.drawable.icon)
+                        val btmp = addWatermarkBitmap(resource, watermark, 0.2f, 90, 100f)
+                        binding?.imageView?.setImageBitmap(btmp)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
         }
 
 

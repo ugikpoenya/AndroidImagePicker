@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,15 +22,19 @@ import com.ugikpoenya.imagepicker.RandomImage
 import com.ugikpoenya.imagepicker.currentPhotoFile
 import com.ugikpoenya.imagepicker.tools.addWatermarkBitmap
 import com.ugikpoenya.imagepicker.tools.getBitmabFromUri
+import com.ugikpoenya.imagepicker.tools.getRandomFilename
 import com.ugikpoenya.imagepicker.tools.initTempUriFile
+import com.ugikpoenya.imagepicker.tools.saveBitmap
 import com.ugikpoenya.sampleappimagepicker.databinding.ActivityMainBinding
 import com.yalantis.ucrop.UCrop
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     private var binding: ActivityMainBinding? = null
     var currentBitmab: Bitmap? = null
+    var currentPath = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -58,7 +63,22 @@ class MainActivity : AppCompatActivity() {
                 })
         }
 
+        val filename = getRandomFilename()
+        val imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/" + getString(R.string.app_name))
+        Log.d("LOG", "filename : " + filename)
+        Log.d("LOG", "imagesDir : " + imagesDir.path)
 
+
+        binding?.btnDownload?.setOnClickListener {
+            if (currentBitmab !== null) {
+                if (currentPath.isNullOrEmpty()) {
+                    currentPath = saveBitmap(currentBitmab, filename, imagesDir)
+                } else {
+                    currentPath = saveBitmap(currentBitmab, File(currentPath))
+                }
+            }
+            Log.d("LOG", "Path : " + currentPath)
+        }
     }
 
 
